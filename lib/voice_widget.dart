@@ -83,7 +83,7 @@ class _VoiceWidgetState extends State<VoiceWidget> {
         }
       });
 
-      print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
+//       print("振幅大小   " + voiceData.toString() + "  " + voiceIco);
     });
   }
 
