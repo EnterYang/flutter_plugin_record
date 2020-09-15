@@ -214,9 +214,8 @@ class _VoiceWidgetState extends State<VoiceWidget> {
            moveVoiceView();
          },
         child: Container(
-          height: 60,
           color: Colors.white,
-          margin: EdgeInsets.fromLTRB(50, 0, 50, 20),
+          padding: EdgeInsets.symmetric(horizontal: 10.px),
           child: Center(
             child: Text(
               textShow,
