@@ -215,7 +215,6 @@ class _VoiceWidgetState extends State<VoiceWidget> {
          },
         child: Container(
           color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10.px),
           child: Center(
             child: Text(
               textShow,
