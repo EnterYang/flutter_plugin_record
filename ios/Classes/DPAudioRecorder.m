@@ -31,7 +31,7 @@ static const CSVoiceType preferredVoiceType = CSVoiceTypeWav;
 
 @property (nonatomic, strong) AVAudioRecorder *audioRecorder;
 @property (nonatomic, strong) NSString *originWaveFilePath;
-
+@property (nonatomic, assign) BOOL isFixedPath;
 
 
 @end
@@ -59,34 +59,37 @@ static DPAudioRecorder *recorderManager = nil;
 - (instancetype)init
 {
     if (self = [super init]) {
-        //创建缓存录音文件到Tmp
-        NSString *wavRecordFilePath = [self createWaveFilePath];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:wavRecordFilePath]) {
-            [[NSData data] writeToFile:wavRecordFilePath atomically:YES];
-        }
-        self.originWaveFilePath = wavRecordFilePath;
-        
-        NSLog(@"ios------初始化默认录制文件路径---%@",wavRecordFilePath);
-    
     }
     return self;
 }
  
 - (NSString *) createWaveFilePath {
-    return [NSTemporaryDirectory() stringByAppendingPathComponent:@"WAVtemporaryRadio.wav"];
+    NSString *filePath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/CIR_voice_%@.wav",[self getCurrentTimes]]];
+    return filePath;
 }
+
+- (NSString *) getCurrentTimes{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"YYYYMMddHHmmss"];
+
+    NSDate *dateNow = [NSDate date];
+    NSString *currentTimeString = [formatter stringFromDate:dateNow];
+
+    return currentTimeString;
+}
+
 
 /// 根据传递过来的文件路径创建wav录制文件路径
 /// @param wavPath 传递的文件路径
 - (void)initByWavPath:(NSString *) wavPath{
-        
-           NSString *wavRecordFilePath = wavPath;
-           if (![[NSFileManager defaultManager] fileExistsAtPath:wavRecordFilePath]) {
-               [[NSData data] writeToFile:wavRecordFilePath atomically:YES];
-           }
-           
-         self.originWaveFilePath = wavPath;
-        NSLog(@"ios-----传递的录制文件路径-------- %@",wavPath);
+    NSString *wavRecordFilePath = wavPath;
+   
+    if (![[NSFileManager defaultManager] fileExistsAtPath:wavRecordFilePath]) {
+        [[NSData data] writeToFile:wavRecordFilePath atomically:YES];
+    }
+    self.isFixedPath = YES;
+    self.originWaveFilePath = wavPath;
+    NSLog(@"ios-----传递的录制文件路径-------- %@",wavPath);
 }
 
 /// 开始录制方法
@@ -228,6 +231,13 @@ static DPAudioRecorder *recorderManager = nil;
         dispatch_source_cancel(timer);
         timer = NULL;
     }
+}
+
+- (NSString *) originWaveFilePath {
+    if (self.isFixedPath) {
+        return _originWaveFilePath;
+    }
+    return [self createWaveFilePath];
 }
 
 NSData* WriteWavFileHeader(long lengthWithHeader, int sampleRate, int channels, int PCMBitDepth) {

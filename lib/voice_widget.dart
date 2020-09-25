@@ -7,9 +7,10 @@ typedef stopRecord = Future Function();
 class VoiceWidget extends StatefulWidget {
   final Function startRecord;
   final Function stopRecord;
+  final String recordPath;
 
   /// startRecord 开始录制回调  stopRecord回调
-  const VoiceWidget({Key key, this.startRecord, this.stopRecord})
+  const VoiceWidget({Key key, this.startRecord, this.stopRecord, this.recordPath})
       : super(key: key);
 
   @override
@@ -189,7 +190,11 @@ class _VoiceWidgetState extends State<VoiceWidget> {
 
   ///开始语音录制的方法
   void start() async {
-    recordPlugin.start();
+    if(widget.recordPath == null) {
+      recordPlugin.start();
+    }else {
+      recordPlugin.startByWavPath(widget.recordPath);
+    }
   }
 
   ///停止语音录制的方法
