@@ -165,7 +165,8 @@ static DPAudioRecorder *recorderManager = nil;
     if (!_audioRecorder) {
         
         //暂存录音文件路径
-        NSString *wavRecordFilePath = self.originWaveFilePath;
+        NSString *wavRecordFilePath = self.isFixedPath ? self.originWaveFilePath : [self createWaveFilePath];
+        self.originWaveFilePath = wavRecordFilePath;
         NSLog(@"%@", wavRecordFilePath);
         NSDictionary *param =
         @{AVSampleRateKey:@8000.0,    //采样率
@@ -231,13 +232,6 @@ static DPAudioRecorder *recorderManager = nil;
         dispatch_source_cancel(timer);
         timer = NULL;
     }
-}
-
-- (NSString *) originWaveFilePath {
-    if (self.isFixedPath) {
-        return _originWaveFilePath;
-    }
-    return [self createWaveFilePath];
 }
 
 NSData* WriteWavFileHeader(long lengthWithHeader, int sampleRate, int channels, int PCMBitDepth) {
